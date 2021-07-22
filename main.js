@@ -11,6 +11,7 @@ const nextBtn = $('.btn.btn-next')
 const prevBtn = $('.btn.btn-prev')
 const randomBtn = $('.btn.btn-random')
 const repeatBtn = $('.btn-repeat')
+const playlist = $('.playlist')
 const app = {
     currentIndex: 0,
     isPlaying: false,
@@ -61,7 +62,7 @@ const app = {
     render: function () {
         const htmls = this.songs.map((song,index) => {
             return `
-                <div class="song ${index === this.currentIndex ? 'active' : ''}">
+                <div class="song ${index === this.currentIndex ? 'active' : ''}" data-index="${ index}">
                     <div class="thumb" style="background-image: url('${song.image}')">
                     </div>
                     <div class="body">
@@ -202,13 +203,25 @@ const app = {
                 audio.play()
             }
         }
+
+        //Xử lý phát bài hát khi click
+
+        playlist.onclick = function(e) {
+            const songNode = e.target.closest('.song:not(.active)')
+            if (songNode || e.target.closest('.option')) {
+                _this.currentIndex = Number(songNode.getAttribute('data-index'))
+                _this.loadCurrentSong()
+                _this.render()
+                audio.play()
+            }
+        }
     },
 
     scrollToActiveSong: function() {
         setTimeout(() => {
             $('.song.active').scrollIntoView({
                 behavior: 'smooth',
-                block: 'nearest'
+                block: 'center',
             })
         },10)
 
